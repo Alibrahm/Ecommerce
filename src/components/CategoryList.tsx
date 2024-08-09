@@ -5,7 +5,7 @@ import Link from "next/link";
 const CategoryList = async () => {
   const wixClient = await wixClientServer();
 
-  
+
   const cats = await wixClient.collections.queryCollections().find();
 
   return (
@@ -18,13 +18,13 @@ const CategoryList = async () => {
             key={item._id}
           >
             <div className="relative bg-slate-100 w-full h-96">
-              <Image
+              {/* <Image
                 src={item.media?.mainMedia?.image?.url || "cat.png"}
                 alt=""
                 fill
                 sizes="20vw"
                 className="object-cover"
-              />
+              /> */}
             </div>
             <h1 className="mt-8 font-light text-xl tracking-wide">
               {item.name}
