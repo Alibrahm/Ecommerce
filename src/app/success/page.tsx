@@ -1,8 +1,11 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import Confetti from "react-confetti";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, Suspense } from "react";
+import Confetti from "react-confetti";
+import dynamic from "next/dynamic";
+
+// Ensure this component is only rendered on the client side
 const SuccessPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -33,4 +36,7 @@ const SuccessPage = () => {
   );
 };
 
-export default SuccessPage;
+// Dynamically import the component so that it's only rendered on the client side
+export default dynamic(() => Promise.resolve(SuccessPage), {
+  ssr: false,
+});
