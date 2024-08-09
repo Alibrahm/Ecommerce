@@ -1,17 +1,26 @@
-// pages/[slug].tsx
-import { GetServerSideProps } from 'next';
-import { wixClientServer } from "@/lib/wixClientServer";
+// src/app/[slug]/page.tsx
+
 import Add from "@/components/Add";
 import CustomizeProducts from "@/components/CustomizeProducts";
 import ProductImages from "@/components/ProductImages";
 import Reviews from "@/components/Reviews";
+import { wixClientServer } from "@/lib/wixClientServer";
 import { notFound } from "next/navigation";
-import { Suspense } from 'react';
+import { Suspense } from "react";
 
-const SinglePage = ({ product }: { product: any }) => {
-  if (!product) {
+const SinglePage = async ({ params }: { params: { slug: string } }) => {
+  const wixClient = await wixClientServer();
+  
+  const products = await wixClient.products
+    .queryProducts()
+    .eq("slug", params.slug)
+    .find();
+
+  if (!products.items[0]) {
     return notFound();
   }
+
+  const product = products.items[0];
 
   return (
     <div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
@@ -66,28 +75,6 @@ const SinglePage = ({ product }: { product: any }) => {
       </div>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug } = context.params!;
-  const wixClient = await wixClientServer();
-
-  const products = await wixClient.products
-    .queryProducts()
-    .eq("slug", slug)
-    .find();
-
-  if (!products.items[0]) {
-    return { notFound: true };
-  }
-
-  const product = products.items[0];
-
-  return {
-    props: {
-      product,
-    },
-  };
 };
 
 export default SinglePage;
